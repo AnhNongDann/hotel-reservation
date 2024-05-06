@@ -72,8 +72,8 @@ public class ReservationService {
     }
 
     private static boolean isOverlap(Reservation reservation, Date checkInDate, Date checkOutDate) {
-        if ((checkInDate.before(reservation.getCheckOutDate()) && checkInDate.after(reservation.getCheckInDate())) ||
-                (checkOutDate.before(reservation.getCheckOutDate()) && checkOutDate.after(reservation.getCheckInDate()))) {
+        if ((!checkInDate.after(reservation.getCheckOutDate()) && !checkInDate.before(reservation.getCheckInDate())) ||
+                (!checkOutDate.after(reservation.getCheckOutDate()) && !checkOutDate.before(reservation.getCheckInDate()))) {
             return true;
         }
 
