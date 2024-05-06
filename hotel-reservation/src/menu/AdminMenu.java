@@ -13,6 +13,9 @@ import java.util.Scanner;
 
 public class AdminMenu extends Menu {
 
+    private HotelResource hotelResource = HotelResource.getInstance();
+    private AdminResource adminResource = AdminResource.getInstance();
+
     public AdminMenu() {
         super(Arrays.asList("1. See all customers",
                 "2. See all rooms",
@@ -52,7 +55,7 @@ public class AdminMenu extends Menu {
     }
 
     public void displayAllCustomers(){
-        Collection<Customer> customers = AdminResource.getAllCustomers();
+        Collection<Customer> customers = adminResource.getAllCustomers();
 
         if (customers.isEmpty()) {
             System.out.println("No customers found.");
@@ -65,7 +68,7 @@ public class AdminMenu extends Menu {
     }
 
     public void displayAllRooms(){
-        Collection<IRoom> rooms = AdminResource.getAllRoom();
+        Collection<IRoom> rooms = adminResource.getAllRoom();
 
         if (rooms.isEmpty()) {
             System.out.println("No rooms found.");
@@ -78,18 +81,18 @@ public class AdminMenu extends Menu {
     }
 
     public void displayAllReservations(){
-        AdminResource.DisplayAllReservations();
+        adminResource.DisplayAllReservations();
         waitExitStatement();
     }
 
-    private static void addNewRoom() {
+    private void addNewRoom() {
         final Scanner scanner = new Scanner(System.in);
 
         System.out.println("Enter room number:");
         String roomNumber = "";
         while (roomNumber.isEmpty()){
             roomNumber = scanner.nextLine();
-            IRoom room = HotelResource.getRoom(roomNumber);
+            IRoom room = hotelResource.getRoom(roomNumber);
             if (room != null){
                 roomNumber = "";
                 System.out.println("This room number is contains. Please enter another room number.");
@@ -130,7 +133,7 @@ public class AdminMenu extends Menu {
         }
         final Room room = new Room(roomNumber, roomPrice, roomType);
 
-        AdminResource.addARoom(room);
+        adminResource.addARoom(room);
         System.out.println("Create new room successfully!");
         waitExitStatement();
     }

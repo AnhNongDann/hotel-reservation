@@ -12,30 +12,37 @@ import java.util.Date;
 import java.util.Objects;
 
 public class HotelResource {
-
-    public static Customer getCustomer(String email) {
-        return CustomerService.getCustomer(email);
+    private static HotelResource hotelResource = new HotelResource();
+    public static HotelResource getInstance () {
+        return hotelResource;
     }
 
-    public static void createACustomer(String email, String firstName, String lastName) {
-        CustomerService.addCustomer(email, firstName, lastName);
+    CustomerService customerService = CustomerService.getInstance();
+    ReservationService reservationService = ReservationService.getInstance();
+
+    public Customer getCustomer(String email) {
+        return customerService.getCustomer(email);
     }
 
-    public static IRoom getRoom(String roomNumber) {
-        return ReservationService.getARoom(roomNumber);
+    public void createACustomer(String email, String firstName, String lastName) {
+        customerService.addCustomer(email, firstName, lastName);
     }
 
-    public static Reservation bookARoom(String customerEmail, IRoom room, Date checkInDate, Date checkOutDate) {
-        return ReservationService.reserveARoom(getCustomer(customerEmail), room, checkInDate, checkOutDate);
+    public IRoom getRoom(String roomNumber) {
+        return reservationService.getARoom(roomNumber);
     }
 
-    public static Collection<Reservation> getCustomersReservations(String customerEmail) {
+    public Reservation bookARoom(String customerEmail, IRoom room, Date checkInDate, Date checkOutDate) {
+        return reservationService.reserveARoom(getCustomer(customerEmail), room, checkInDate, checkOutDate);
+    }
+
+    public Collection<Reservation> getCustomersReservations(String customerEmail) {
         final Customer customer = getCustomer(customerEmail);
 
-        return Objects.isNull(customer) ? Collections.emptyList() : ReservationService.getCustomersReservation(customer);
+        return Objects.isNull(customer) ? Collections.emptyList() : reservationService.getCustomersReservation(customer);
     }
 
-    public static Collection<IRoom> findARoom(final Date checkIn, final Date checkOut) {
-        return ReservationService.findRooms(checkIn, checkOut);
+    public Collection<IRoom> findARoom(final Date checkIn, final Date checkOut) {
+        return reservationService.findRooms(checkIn, checkOut);
     }
 }

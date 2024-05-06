@@ -16,6 +16,10 @@ import static Constants.ConfigConstants.*;
 
 
 public class MainMenu extends Menu {
+    private HotelResource hotelResource = HotelResource.getInstance();
+    private AdminResource adminResource = AdminResource.getInstance();
+
+
     public MainMenu() {
         super(Arrays.asList("1. Find and reserve a room",
                 "2. See my reservation",
@@ -62,12 +66,12 @@ public class MainMenu extends Menu {
 
         System.out.println("Enter your Email with format: name@domain.com");
         final String customerEmail = scanner.nextLine();
-        Customer customer = AdminResource.getCustomer(customerEmail);
+        Customer customer = adminResource.getCustomer(customerEmail);
         if (customer == null) {
             System.out.println("Something is wrong, this is not email entered with us. pleas help me check again.");
             waitExitStatement();
         } else {
-            Collection<Reservation> allReservation = HotelResource.getCustomersReservations(customerEmail);
+            Collection<Reservation> allReservation = hotelResource.getCustomersReservations(customerEmail);
 
             if (allReservation.isEmpty()) {
                 System.out.println("You have not reservation any room with us.");
@@ -122,7 +126,7 @@ public class MainMenu extends Menu {
         clearConsole();
         System.out.println("Your request is Check-in Date : " + dateToString(checkInDate) + " and Check-out Date : " + dateToString(checkOutDate));
 
-        Collection<IRoom> availableRooms = HotelResource.findARoom(checkInDate, checkOutDate);
+        Collection<IRoom> availableRooms = hotelResource.findARoom(checkInDate, checkOutDate);
         if (!availableRooms.isEmpty()) {
             System.out.println("With your request, we have some option as bellow: ");
             availableRooms.forEach(r -> {
@@ -171,7 +175,7 @@ public class MainMenu extends Menu {
         return;
     }
 
-    private static void serveRoom(final Scanner scanner, IRoom bookedRoom, Date checkInDate, Date checkOutDate) {
+    private void serveRoom(final Scanner scanner, IRoom bookedRoom, Date checkInDate, Date checkOutDate) {
         System.out.println("The room you request is " + bookedRoom);
         Customer customer = null;
         String customerEmail = "";
@@ -185,19 +189,19 @@ public class MainMenu extends Menu {
                 continue;
             }
 
-            customer = AdminResource.getCustomer(customerEmail);
+            customer = adminResource.getCustomer(customerEmail);
             if (customer == null) {
                 System.out.println("Something is wrong, this is not email entered with us. pleas help me check again.");
             }
         }
 
-        Reservation reservation = HotelResource.bookARoom(customerEmail, bookedRoom, checkInDate, checkOutDate);
+        Reservation reservation = hotelResource.bookARoom(customerEmail, bookedRoom, checkInDate, checkOutDate);
         System.out.println("Book room successfully");
         System.out.println(reservation);
         waitExitStatement();
     }
 
-    private static void createAccount() {
+    private void createAccount() {
         final Scanner scanner = new Scanner(System.in);
         while (true) {
 
@@ -211,7 +215,7 @@ public class MainMenu extends Menu {
             final String lastName = scanner.nextLine();
 
             try {
-                HotelResource.createACustomer(email, firstName, lastName);
+                hotelResource.createACustomer(email, firstName, lastName);
                 System.out.println("Account is created successfully!");
                 waitExitStatement();
                 return;
